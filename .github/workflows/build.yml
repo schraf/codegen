@@ -1,22 +1,27 @@
-name: Go
-
+name: Build
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
 jobs:
-
   build:
-    runs-on: ubuntu-latest
+    name: Build
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Go
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install Go
       uses: actions/setup-go@v3
       with:
         go-version: 1.18
-
-    - name: Build
-      run: go build -v ./...
+    - name: Build Project
+      run: go build -v -o codegen ./...
+    - name: Archive Build
+      uses: actions/upload-artifact@v3
+      with:
+        name: codegen-${{ matrix.os }}
+        path: codegen
