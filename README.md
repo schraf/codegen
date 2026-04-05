@@ -140,3 +140,41 @@ A `Makefile` is provided with common targets:
 -   `make vet`: Vet the Go source code for issues.
 -   `make fmt`: Format the Go source code.
 -   `make all`: Run `deps`, `vet`, and `test`.
+
+## Using with CMake
+
+You can integrate `codegen` into your C/C++ projects using the provided `cmake/codegen.cmake` module.
+
+### 1. Include the module
+
+Copy `cmake/codegen.cmake` to your project and include it in your `CMakeLists.txt`:
+
+```cmake
+include(cmake/codegen.cmake)
+```
+
+### 2. Initialize the tool
+
+Call `codegen_init` with a specific Git tag or branch to download and build the `codegen` tool:
+
+```cmake
+codegen_init(main)
+```
+
+### 3. Generate code for a target
+
+Use `codegen_project` to link a `project.json` file to your target. This will automatically run the generation tool during the build process and add the generated files to your target's source list.
+
+```cmake
+add_executable(my_app main.c)
+
+codegen_project(my_app
+    PROJECT_FILE "codegen_project.json"
+    OUTPUTS "generated_source.c" "generated_header.h"
+    DEPENDS "templates/template.tmpl" "data/data.json"
+)
+```
+
+- `PROJECT_FILE`: The path to your `codegen` project configuration.
+- `OUTPUTS`: The list of files that `codegen` will generate.
+- `DEPENDS`: (Optional) Additional files that should trigger a re-generation if modified (e.g., templates or data files).
