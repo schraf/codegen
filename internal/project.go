@@ -3,9 +3,8 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
-	"io/ioutil"
 	"os"
+	"text/template"
 )
 
 // Output defines the structure for a single output file generation task.
@@ -39,7 +38,7 @@ func LoadProject(filename string) (*Project, error) {
 		Outputs:  []Output{},
 	}
 
-	contents, err := ioutil.ReadFile(filename)
+	contents, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read project file '%s': %w", filename, err)
 	}
@@ -56,9 +55,13 @@ func LoadProject(filename string) (*Project, error) {
 // specific template and its input data, executes the template, and writes
 // the result to the specified output file.
 func (p Project) Execute() error {
-	baseTemplate, err := template.ParseFiles(p.Includes...)
-	if err != nil {
-		return fmt.Errorf("failed parsing include files: %w", err)
+	baseTemplate := template.New("").Funcs(StringFuncs())
+	var err error
+	if len(p.Includes) > 0 {
+		baseTemplate, err = baseTemplate.ParseFiles(p.Includes...)
+		if err != nil {
+			return fmt.Errorf("failed parsing include files: %w", err)
+		}
 	}
 
 	for _, output := range p.Outputs {
@@ -66,7 +69,7 @@ func (p Project) Execute() error {
 		//--== LOAD THE INPUT VARIABLES
 		//--========================================================--
 
-		inputContents, err := ioutil.ReadFile(output.Input)
+		inputContents, err := os.ReadFile(output.Input)
 		if err != nil {
 			return fmt.Errorf("failed to read input file '%s': %w", output.Input, err)
 		}
@@ -81,7 +84,7 @@ func (p Project) Execute() error {
 		//--== LOAD THE TEMPLATE
 		//--========================================================--
 
-		templateContents, err := ioutil.ReadFile(output.Template)
+		templateContents, err := os.ReadFile(output.Template)
 		if err != nil {
 			return fmt.Errorf("failed to read output template '%s': %w", output.Template, err)
 		}

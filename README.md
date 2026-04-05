@@ -50,6 +50,35 @@ Each object in the `outputs` array has the following properties:
 }
 ```
 
+## Template Functions
+
+The engine includes several built-in functions that you can use in your templates to format strings. These are especially useful for converting variable names between different conventions:
+
+| Function | Example Usage | Result for "user_id" |
+| :--- | :--- | :--- |
+| `toCamelCase` | `{{.Name \| toCamelCase}}` | `userId` |
+| `toPascalCase` | `{{.Name \| toPascalCase}}` | `UserId` |
+| `toSnakeCase` | `{{.Name \| toSnakeCase}}` | `user_id` |
+| `toKebabCase` | `{{.Name \| toKebabCase}}` | `user-id` |
+| `toScreamingSnake` | `{{.Name \| toScreamingSnake}}` | `USER_ID` |
+| `toScreamingKebab` | `{{.Name \| toScreamingKebab}}` | `USER-ID` |
+| `toDotCase` | `{{.Name \| toDotCase}}` | `user.id` |
+| `toPathCase` | `{{.Name \| toPathCase}}` | `user/id` |
+| `toLower` | `{{.Name \| toLower}}` | `user_id` |
+| `toUpper` | `{{.Name \| toUpper}}` | `USER_ID` |
+| `capitalize` | `{{.Name \| capitalize}}` | `User_id` |
+
+*Note: The case conversion functions are smart and can handle inputs in snake_case, camelCase, PascalCase, kebab-case, or mixed cases seamlessly.*
+
+**Other Utilities:**
+- `trimSpace`
+- `hasPrefix`
+- `hasSuffix`
+- `contains`
+- `replace`
+- `split`
+- `join`
+
 ## Example
 
 Let's say you want to generate a simple Go struct.
@@ -140,3 +169,41 @@ A `Makefile` is provided with common targets:
 -   `make vet`: Vet the Go source code for issues.
 -   `make fmt`: Format the Go source code.
 -   `make all`: Run `deps`, `vet`, and `test`.
+
+## Using with CMake
+
+You can integrate `codegen` into your C/C++ projects using the provided `cmake/codegen.cmake` module.
+
+### 1. Include the module
+
+Copy `cmake/codegen.cmake` to your project and include it in your `CMakeLists.txt`:
+
+```cmake
+include(cmake/codegen.cmake)
+```
+
+### 2. Initialize the tool
+
+Call `codegen_init` with a specific Git tag or branch to download and build the `codegen` tool:
+
+```cmake
+codegen_init(main)
+```
+
+### 3. Generate code for a target
+
+Use `codegen_project` to link a `project.json` file to your target. This will automatically run the generation tool during the build process and add the generated files to your target's source list.
+
+```cmake
+add_executable(my_app main.c)
+
+codegen_project(my_app
+    PROJECT_FILE "codegen_project.json"
+    OUTPUTS "generated_source.c" "generated_header.h"
+    DEPENDS "templates/template.tmpl" "data/data.json"
+)
+```
+
+- `PROJECT_FILE`: The path to your `codegen` project configuration.
+- `OUTPUTS`: The list of files that `codegen` will generate.
+- `DEPENDS`: (Optional) Additional files that should trigger a re-generation if modified (e.g., templates or data files).
