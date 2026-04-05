@@ -50,6 +50,35 @@ Each object in the `outputs` array has the following properties:
 }
 ```
 
+## Template Functions
+
+The engine includes several built-in functions that you can use in your templates to format strings. These are especially useful for converting variable names between different conventions:
+
+| Function | Example Usage | Result for "user_id" |
+| :--- | :--- | :--- |
+| `toCamelCase` | `{{.Name \| toCamelCase}}` | `userId` |
+| `toPascalCase` | `{{.Name \| toPascalCase}}` | `UserId` |
+| `toSnakeCase` | `{{.Name \| toSnakeCase}}` | `user_id` |
+| `toKebabCase` | `{{.Name \| toKebabCase}}` | `user-id` |
+| `toScreamingSnake` | `{{.Name \| toScreamingSnake}}` | `USER_ID` |
+| `toScreamingKebab` | `{{.Name \| toScreamingKebab}}` | `USER-ID` |
+| `toDotCase` | `{{.Name \| toDotCase}}` | `user.id` |
+| `toPathCase` | `{{.Name \| toPathCase}}` | `user/id` |
+| `toLower` | `{{.Name \| toLower}}` | `user_id` |
+| `toUpper` | `{{.Name \| toUpper}}` | `USER_ID` |
+| `capitalize` | `{{.Name \| capitalize}}` | `User_id` |
+
+*Note: The case conversion functions are smart and can handle inputs in snake_case, camelCase, PascalCase, kebab-case, or mixed cases seamlessly.*
+
+**Other Utilities:**
+- `trimSpace`
+- `hasPrefix`
+- `hasSuffix`
+- `contains`
+- `replace`
+- `split`
+- `join`
+
 ## Example
 
 Let's say you want to generate a simple Go struct.

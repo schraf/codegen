@@ -67,7 +67,7 @@ func TestProject_Execute(t *testing.T) {
 
 		// Create test files
 		baseTmplPath := createTempFile(t, tempDir, "base.tmpl", `{{define "base"}}Base content: {{template "content" .}}{{end}}`)
-		pageTmplPath := createTempFile(t, tempDir, "page.tmpl", `{{template "base" .}}{{define "content"}}Hello, {{.Name}}!{{end}}`)
+		pageTmplPath := createTempFile(t, tempDir, "page.tmpl", `{{template "base" .}}{{define "content"}}Hello, {{.Name | toUpper}}!{{end}}`)
 		inputJSONPath := createTempFile(t, tempDir, "data.json", `{"Name": "World"}`)
 		outputPath := filepath.Join(tempDir, "page.html")
 
@@ -87,7 +87,7 @@ func TestProject_Execute(t *testing.T) {
 
 		outputContent, err := os.ReadFile(outputPath)
 		require.NoError(t, err)
-		assert.Equal(t, `Base content: Hello, World!`, string(outputContent))
+		assert.Equal(t, `Base content: Hello, WORLD!`, string(outputContent))
 	})
 
 	t.Run("missing include file", func(t *testing.T) {
