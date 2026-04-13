@@ -110,3 +110,31 @@ func TestCapitalize(t *testing.T) {
 	assert.Equal(t, "F", capitalize("f"))
 	assert.Equal(t, "", capitalize(""))
 }
+
+func TestIndent(t *testing.T) {
+	assert.Equal(t, "    hello", indent(4, "hello"))
+	assert.Equal(t, "  line1\n  line2\n  line3", indent(2, "line1\nline2\nline3"))
+	assert.Equal(t, "hello", indent(0, "hello"))
+	assert.Equal(t, "", indent(4, ""))
+	assert.Equal(t, "\t\thello", indentTab(2, "hello"))
+	assert.Equal(t, "\tline1\n\tline2", indentTab(1, "line1\nline2"))
+}
+
+func TestStringFuncsRegistered(t *testing.T) {
+	funcs := StringFuncs()
+
+	expectedKeys := []string{
+		"toLower", "toUpper", "capitalize",
+		"toCamelCase", "toPascalCase", "toSnakeCase", "toKebabCase",
+		"toScreamingSnake", "toScreamingKebab", "toDotCase", "toPathCase",
+		"trimSpace", "hasPrefix", "hasSuffix", "contains",
+		"replace", "split", "join",
+		"trimPrefix", "trimSuffix",
+		"indent", "indentTab",
+	}
+
+	for _, key := range expectedKeys {
+		_, ok := funcs[key]
+		assert.True(t, ok, "StringFuncs should contain %q", key)
+	}
+}

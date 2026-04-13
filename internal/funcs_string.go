@@ -27,8 +27,16 @@ func StringFuncs() template.FuncMap {
 		"replace":          strings.ReplaceAll,
 		"split":            strings.Split,
 		"join":             strings.Join,
+		"trimPrefix":       strings.TrimPrefix,
+		"trimSuffix":       strings.TrimSuffix,
+		"indent":           indent,
+		"indentTab":        indentTab,
 	}
 }
+
+// ---------------------------------------------------------------------------
+// String case helpers
+// ---------------------------------------------------------------------------
 
 // capitalize capitalizes the first character of the string and lowers the rest.
 func capitalize(s string) string {
@@ -152,4 +160,34 @@ func toPathCase(s string) string {
 		words[i] = strings.ToLower(word)
 	}
 	return strings.Join(words, "/")
+}
+
+// ---------------------------------------------------------------------------
+// Indentation
+// ---------------------------------------------------------------------------
+
+// indent prepends every non-empty line in s with <spaces> spaces.
+// Designed for piping: {{ .Content | indent 4 }}
+func indent(spaces int, s string) string {
+	pad := strings.Repeat(" ", spaces)
+	lines := strings.Split(s, "\n")
+	for i, line := range lines {
+		if line != "" {
+			lines[i] = pad + line
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+// indentTab prepends every non-empty line in s with <count> tab characters.
+// Designed for piping: {{ .Content | indentTab 2 }}
+func indentTab(count int, s string) string {
+	pad := strings.Repeat("\t", count)
+	lines := strings.Split(s, "\n")
+	for i, line := range lines {
+		if line != "" {
+			lines[i] = pad + line
+		}
+	}
+	return strings.Join(lines, "\n")
 }

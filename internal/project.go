@@ -55,7 +55,7 @@ func LoadProject(filename string) (*Project, error) {
 // specific template and its input data, executes the template, and writes
 // the result to the specified output file.
 func (p Project) Execute() error {
-	baseTemplate := template.New("").Funcs(StringFuncs())
+	baseTemplate := template.New("").Funcs(StringFuncs()).Funcs(UtilFuncs())
 	var err error
 	if len(p.Includes) > 0 {
 		baseTemplate, err = baseTemplate.ParseFiles(p.Includes...)
