@@ -52,7 +52,11 @@ Each object in the `outputs` array has the following properties:
 
 ## Template Functions
 
-The engine includes several built-in functions that you can use in your templates to format strings. These are especially useful for converting variable names between different conventions:
+The engine includes a wide variety of built-in functions that you can use in your templates.
+
+### String Case Conversions
+
+These are especially useful for converting variable names between different conventions:
 
 | Function | Example Usage | Result for "user_id" |
 | :--- | :--- | :--- |
@@ -70,14 +74,58 @@ The engine includes several built-in functions that you can use in your template
 
 *Note: The case conversion functions are smart and can handle inputs in snake_case, camelCase, PascalCase, kebab-case, or mixed cases seamlessly.*
 
-**Other Utilities:**
-- `trimSpace`
-- `hasPrefix`
-- `hasSuffix`
-- `contains`
-- `replace`
-- `split`
-- `join`
+### String Manipulation
+
+| Function | Example Usage | Description |
+| :--- | :--- | :--- |
+| `trimSpace` | `{{.Name \| trimSpace}}` | Removes leading and trailing white space. |
+| `trimPrefix` | `{{.Name \| trimPrefix "user_"}}` | Removes the specified prefix. |
+| `trimSuffix` | `{{.Name \| trimSuffix "_id"}}` | Removes the specified suffix. |
+| `hasPrefix` | `{{hasPrefix "user_" .Name}}` | Checks if a string starts with a prefix. |
+| `hasSuffix` | `{{hasSuffix "_id" .Name}}` | Checks if a string ends with a suffix. |
+| `contains` | `{{contains "id" .Name}}` | Checks if a string contains a substring. |
+| `replace` | `{{replace .Name "old" "new"}}` | Replaces all occurrences of a substring. |
+| `split` | `{{split .Name ","}}` | Splits a string into an array of strings. |
+| `join` | `{{join .List ","}}` | Joins an array of strings into a single string. |
+| `indent` | `{{.Content \| indent 4}}` | Indents each non-empty line with 4 spaces. |
+| `indentTab` | `{{.Content \| indentTab 2}}` | Indents each non-empty line with 2 tabs. |
+| `regexMatch` | `{{regexMatch "^[a-z]+$" .Name}}` | Reports whether the string matches the regex. |
+| `regexReplace` | `{{regexReplace "a+" "b" .Name}}` | Replaces regex matches in a string. |
+
+### Math & Numeric
+
+| Function | Example Usage | Result |
+| :--- | :--- | :--- |
+| `add` | `{{add 1 2}}` | `3` |
+| `sub` | `{{sub 5 2}}` | `3` |
+| `mul` | `{{mul 2 3}}` | `6` |
+| `div` | `{{div 6 2}}` | `3` |
+| `mod` | `{{mod 7 3}}` | `1` |
+| `hexString` | `{{hexString 255}}` | `"ff"` |
+
+### File & System Utilities
+
+| Function | Example Usage | Description |
+| :--- | :--- | :--- |
+| `fileSize` | `{{fileSize "path/to/file"}}` | Returns the file size in bytes. |
+| `readFile` | `{{readFile "path/to/file"}}` | Reads and returns the file contents as a string. |
+| `env` | `{{env "USER"}}` | Retrieves the value of an environment variable. |
+
+### Encoding & Hashing
+
+| Function | Example Usage | Description |
+| :--- | :--- | :--- |
+| `hash` | `{{hash "my string"}}` | Returns the xxHash 64-bit digest of the string. |
+| `fileHash` | `{{fileHash "path/to/file"}}` | Returns the xxHash 64-bit digest of the file contents. |
+| `base64Encode` | `{{base64Encode "data"}}` | Returns the base64 encoding of the string. |
+| `base64Decode` | `{{base64Decode "ZGF0YQ=="}}` | Decodes a base64 encoded string. |
+
+### General Utilities
+
+| Function | Example Usage | Description |
+| :--- | :--- | :--- |
+| `default` | `{{.Name \| default "unnamed"}}` | Returns the default value if the input is considered empty. |
+| `seq` | `{{seq 1 10 2}}` | Generates a sequence of integers for iterating (e.g. `[1, 3, 5, 7, 9]`). |
 
 ## Example
 
