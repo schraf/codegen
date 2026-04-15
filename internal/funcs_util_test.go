@@ -67,6 +67,7 @@ func TestHexString(t *testing.T) {
 		{"float64 as int", float64(255), "ff", false},
 		{"float64 truncated", float64(255.9), "ff", false},
 		{"negative int", int(-1), "-1", false},
+		{"large uint64", uint64(16971367927435232718), "eb8669363b3c05ce", false},
 		{"unsupported string", "hello", "", true},
 	}
 	for _, tt := range tests {
