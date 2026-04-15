@@ -90,13 +90,27 @@ func toFloat64(v any) (float64, error) {
 }
 
 // hexString converts a numeric value to its hex string representation without
-// any "0x" prefix.  Floats are truncated to int64 before formatting.
+// any "0x" prefix.  Unsigned integers are formatted directly to avoid precision
+// loss from float64 conversion.  Floats are truncated to int64 before formatting.
 func hexString(v any) (string, error) {
-	f, err := toFloat64(v)
-	if err != nil {
-		return "", fmt.Errorf("hexString: %w", err)
+	switch n := v.(type) {
+	case uint:
+		return fmt.Sprintf("%x", n), nil
+	case uint8:
+		return fmt.Sprintf("%x", n), nil
+	case uint16:
+		return fmt.Sprintf("%x", n), nil
+	case uint32:
+		return fmt.Sprintf("%x", n), nil
+	case uint64:
+		return fmt.Sprintf("%x", n), nil
+	default:
+		f, err := toFloat64(v)
+		if err != nil {
+			return "", fmt.Errorf("hexString: %w", err)
+		}
+		return fmt.Sprintf("%x", int64(f)), nil
 	}
-	return fmt.Sprintf("%x", int64(f)), nil
 }
 
 // add returns the sum of two numeric values.
