@@ -3,6 +3,7 @@ package internal
 import (
 	"encoding/base64"
 	"fmt"
+	"hash/crc32"
 	"io"
 	"math"
 	"os"
@@ -26,6 +27,7 @@ func UtilFuncs() template.FuncMap {
 
 		// Hashing
 		"hash":     hashString,
+		"crc32":    crc32String,
 		"fileHash": fileHash,
 
 		// File utilities
@@ -191,6 +193,11 @@ func mod(a, b any) (float64, error) {
 // hashString returns the xxHash 64-bit digest of the given string.
 func hashString(s string) uint64 {
 	return xxhash.Sum64String(s)
+}
+
+// crc32String returns the CRC32 checksum of the given string using the IEEE polynomial.
+func crc32String(s string) uint32 {
+	return crc32.ChecksumIEEE([]byte(s))
 }
 
 // fileHash returns the xxHash 64-bit digest of the contents of the named file.

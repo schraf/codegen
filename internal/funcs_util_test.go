@@ -366,6 +366,26 @@ func TestHashString(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
+// crc32String
+// ---------------------------------------------------------------------------
+
+func TestCrc32String(t *testing.T) {
+	// Deterministic
+	c1 := crc32String("hello")
+	c2 := crc32String("hello")
+	assert.Equal(t, c1, c2)
+
+	// Known value for "hello"
+	// echo -n "hello" | python3 -c "import binascii; print(hex(binascii.crc32(open(0, 'rb').read())))"
+	// should be 0x3610a686
+	assert.Equal(t, uint32(0x3610a686), c1)
+
+	// Different inputs
+	c3 := crc32String("world")
+	assert.NotEqual(t, c1, c3)
+}
+
+// ---------------------------------------------------------------------------
 // fileSize
 // ---------------------------------------------------------------------------
 
@@ -448,7 +468,7 @@ func TestUtilFuncsRegistered(t *testing.T) {
 	expectedKeys := []string{
 		"hexString",
 		"add", "sub", "mul", "div", "mod",
-		"hash", "fileHash",
+		"hash", "crc32", "fileHash",
 		"fileSize", "readFile",
 		"default",
 		"seq",

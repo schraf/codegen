@@ -116,6 +116,7 @@ These are especially useful for converting variable names between different conv
 | Function | Example Usage | Description |
 | :--- | :--- | :--- |
 | `hash` | `{{hash "my string"}}` | Returns the xxHash 64-bit digest of the string. |
+| `crc32` | `{{crc32 "my string"}}` | Returns the CRC32 checksum of the string. |
 | `fileHash` | `{{fileHash "path/to/file"}}` | Returns the xxHash 64-bit digest of the file contents. |
 | `base64Encode` | `{{base64Encode "data"}}` | Returns the base64 encoding of the string. |
 | `base64Decode` | `{{base64Decode "ZGF0YQ=="}}` | Decodes a base64 encoded string. |
