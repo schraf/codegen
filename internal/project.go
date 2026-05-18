@@ -7,12 +7,20 @@ import (
 	"text/template"
 )
 
+// InputOverride is a Key/Value pair that overrides an Input data variable
+type InputOverride struct {
+	Key   string `json:"key"`
+	Value any    `json:"value"`
+}
+
 // Output defines the structure for a single output file generation task.
 type Output struct {
 	// Template is the path to the main template file for this output.
 	Template string `json:"template"`
 	// Input is the path to the JSON file containing data for the template.
 	Input string `json:"input"`
+	// Overrides is a set of override values that apply on top of Input.
+	InputOverrides []InputOverride `json:"overrides"`
 	// Output is the path where the generated file will be saved.
 	Output string `json:"output"`
 }
@@ -78,6 +86,14 @@ func (p Project) Execute() error {
 
 		if err := json.Unmarshal(inputContents, &input); err != nil {
 			return fmt.Errorf("failed to parse input file '%s': %w", output.Input, err)
+		}
+
+		//--========================================================--
+		//--== APPLY ANY INPUT OVERRIDES
+		//--========================================================--
+
+		for _, override := range output.InputOverrides {
+			input[override.Key] = override.Value
 		}
 
 		//--========================================================--

@@ -90,6 +90,40 @@ func TestProject_Execute(t *testing.T) {
 		assert.Equal(t, `Base content: Hello, WORLD!`, string(outputContent))
 	})
 
+	t.Run("successful execution_with_override", func(t *testing.T) {
+		tempDir := t.TempDir()
+
+		// Create test files
+		baseTmplPath := createTempFile(t, tempDir, "base.tmpl", `{{define "base"}}Base content: {{template "content" .}}{{end}}`)
+		pageTmplPath := createTempFile(t, tempDir, "page.tmpl", `{{template "base" .}}{{define "content"}}Hello, {{.Name | toUpper}}!{{end}}`)
+		inputJSONPath := createTempFile(t, tempDir, "data.json", `{"Name": "World"}`)
+		outputPath := filepath.Join(tempDir, "page.html")
+
+		project := &Project{
+			Includes: []string{baseTmplPath},
+			Outputs: []Output{
+				{
+					Template: pageTmplPath,
+					Input:    inputJSONPath,
+					InputOverrides: []InputOverride{
+						{
+							Key:   "Name",
+							Value: "Another World",
+						},
+					},
+					Output: outputPath,
+				},
+			},
+		}
+
+		err := project.Execute()
+		require.NoError(t, err)
+
+		outputContent, err := os.ReadFile(outputPath)
+		require.NoError(t, err)
+		assert.Equal(t, `Base content: Hello, ANOTHER WORLD!`, string(outputContent))
+	})
+
 	t.Run("missing include file", func(t *testing.T) {
 		project := &Project{Includes: []string{"non-existent.tmpl"}}
 		err := project.Execute()
