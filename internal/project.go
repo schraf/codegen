@@ -20,7 +20,7 @@ type Output struct {
 	// Input is the path to the JSON file containing data for the template.
 	Input string `json:"input"`
 	// Overrides is a set of override values that apply on top of Input.
-	InputOverrides []InputOverride `json:"overrides"`
+	InputOverrides []InputOverride `json:"input_overrides"`
 	// Output is the path where the generated file will be saved.
 	Output string `json:"output"`
 }

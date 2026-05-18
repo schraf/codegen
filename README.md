@@ -31,6 +31,7 @@ Each object in the `outputs` array has the following properties:
 
 -   `template`: The path to the main template file for this output.
 -   `input`: The path to the JSON file containing the data to be used in the template.
+-   `input_overrides`: Optional list of key/value pairs that override input data.
 -   `output`: The path where the generated file will be saved.
 
 ### Example `project.json`
